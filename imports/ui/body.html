@@ -1,0 +1,31 @@
+<body>
+	<div class="container">
+		<header>
+			<h1>Trips</h1>
+		</header>
+
+		{{#if currentTrip}}
+		<form class="trip-details">
+			<input type="text" value="{{currentTrip.title}}" placeholder="trip title" class="title">
+			<input type="submit" name="submit" value="End Trip">
+		</form>
+		{{else}}
+		<form class="start-trip">
+			<input type="submit" name="submit" value="Start Trip">
+		</form>
+		{{/if}}
+		<table>
+			<tr>
+				<td>name</td>
+				<td>start</td>
+				<td>duration</td>
+				<td>users</td>
+				<td>points</td>
+				<td>distance</td>
+			</tr>
+			{{#each trips}}
+			{{> trip}}
+			{{/each}}
+		</table>
+	</div>
+</body>
