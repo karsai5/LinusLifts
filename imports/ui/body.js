@@ -22,7 +22,7 @@ Template.body.helpers({
 });
 
 Template.body.events({
-	'submit .start-trip'(event) {
+	'click #start-trip'(event) {
 		// prevent default browser submit
 		event.preventDefault();
 

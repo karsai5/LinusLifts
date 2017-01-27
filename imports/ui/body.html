@@ -1,31 +1,51 @@
 <body>
-	<div class="container">
-		<header>
-			<h1>Trips</h1>
-		</header>
+	<div class="top-bar">
+		<div class="top-bar-left">
+			<ul class="menu">
+				<li class="menu-text">LinusLifts</li>
+				<li>
+				{{> loginButtons}}
+				</li>
+			</ul>
+		</div>
+		<div class="top-bar-right">
+			<ul class="menu">
+			</ul>
+		</div>
+	</div>
 
-		{{#if currentTrip}}
-		<form class="trip-details">
-			<input type="text" value="{{currentTrip.title}}" placeholder="trip title" class="title">
-			<input type="submit" name="submit" value="End Trip">
-		</form>
-		{{else}}
-		<form class="start-trip">
-			<input type="submit" name="submit" value="Start Trip">
-		</form>
-		{{/if}}
-		<table>
+	{{#if currentTrip}}
+	<!-- Only show id they're in a current trip -->
+	<form class="trip-details callout secondary">
+		<label>
+			Trip name:
+			<input type="text" value="{{currentTrip.title}}" placeholder="Long drive" class="title">
+		</label>
+		<input class="button expanded alert" type="submit" name="submit" value="End Trip">
+	</form>
+	{{else}}
+	<!-- else show the option to start a new trip -->
+	<a class="button expanded" id="start-trip">Start Trip</a>
+	{{/if}}
+
+	<!-- table of past trips -->
+	<table>
+		<thead>
 			<tr>
-				<td>name</td>
-				<td>start</td>
-				<td>duration</td>
-				<td>users</td>
-				<td>points</td>
-				<td>distance</td>
+				<th>Name</th>
+				<th>Start</th>
+				<th>Duration</th>
+				<th>Users</th>
+				<th>Points</th>
+				<th>Distance</th>
 			</tr>
+		</thead>
+		<tbody>
 			{{#each trips}}
 			{{> trip}}
 			{{/each}}
-		</table>
-	</div>
+		</tbody>
+	</table>
 </body>
+<template name="user-radio">
+</template>
