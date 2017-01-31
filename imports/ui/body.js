@@ -1,8 +1,10 @@
+import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session'
 
 import { Trips } from '../api/trips.js';
 
+import './usercheckbox.js';
 import './trip.js';
 import './body.html';
 
@@ -16,9 +18,21 @@ var currentTrip = function() {
 
 Template.body.helpers({
 	trips() {
-		return Trips.find({}, { sort: { start: -1 } });
+		return Trips.find({}, { sort: { start: -1 }, limit: 5 });
 	},
 	currentTrip: currentTrip,
+	isAdmin() {
+		try {
+			if (Meteor.user().services.facebook.id == "10206344163361361") {
+				return true;
+			}
+		} catch (err) {
+			return false;
+		}
+	},
+	userList() {
+		return Meteor.users.find({});
+	}
 });
 
 Template.body.events({
@@ -31,10 +45,12 @@ Template.body.events({
 			start: new Date(),
 			end: new Date(),
 			points: new Array(),
+			users: new Array(),
 		});
 
 		// update session variable
 		Session.set("trip", id);
+		console.log(Trips.findOne(currentTrip()._id));
 		// get location permission
 		console.log(Geolocation.currentLocation());
 
@@ -48,7 +64,6 @@ Template.body.events({
 				Trips.update(trip._id, {
 					$push: { points: geolocation },
 				});
-				console.log(trip);
 			} else {
 				clearInterval(pointLoop);
 			}
@@ -72,5 +87,20 @@ Template.body.events({
 		Trips.update(currentTrip()._id, {
 			$set: {text: text},
 		});
+	},
+	'change .trip-details .trip-users input'(event) {
+		if ($(event.target).is(":checked")) {
+			console.log('added user');
+			Trips.update(currentTrip()._id, {
+				$push: { users: this },
+			});
+		} else {
+			console.log('removed user');
+			Trips.update(currentTrip()._id, {
+				$pull: { users: this },
+			});
+		}
+		console.log(event);
+		console.log(this);
 	},
 });

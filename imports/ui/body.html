@@ -14,38 +14,52 @@
 		</div>
 	</div>
 
-	{{#if currentTrip}}
-	<!-- Only show id they're in a current trip -->
-	<form class="trip-details callout secondary">
-		<label>
-			Trip name:
-			<input type="text" value="{{currentTrip.title}}" placeholder="Long drive" class="title">
-		</label>
-		<input class="button expanded alert" type="submit" name="submit" value="End Trip">
-	</form>
-	{{else}}
-	<!-- else show the option to start a new trip -->
-	<a class="button expanded" id="start-trip">Start Trip</a>
-	{{/if}}
+	<div class="row">
+		{{#if currentTrip}}
+		<!-- Only show id they're in a current trip -->
+		<form class="trip-details columns small-12">
+			<h1>Current Trip Details</h1>
+			<label>
+				Trip name:
+				<input type="text" value="{{currentTrip.title}}" placeholder="Long drive" class="title">
+			</label>
 
-	<!-- table of past trips -->
-	<table>
-		<thead>
-			<tr>
-				<th>Name</th>
-				<th>Start</th>
-				<th>Duration</th>
-				<th>Users</th>
-				<th>Points</th>
-				<th>Distance</th>
-			</tr>
-		</thead>
-		<tbody>
-			{{#each trips}}
-			{{> trip}}
-			{{/each}}
-		</tbody>
-	</table>
+			<fieldset class="fieldset trip-users">
+				<legend>Users:</legend>
+				{{#each userList}}
+				{{> usercheckbox}}
+				{{/each}}
+			</fieldset>
+
+			<input class="button expanded alert" type="submit" name="submit" value="End Trip">
+		</form>
+		{{else}}
+		{{#if isAdmin}}
+		<!-- else show the option to start a new trip -->
+		<a class="button expanded" id="start-trip">Start Trip</a>
+		{{/if}}
+		{{/if}}
+	</div>
+
+	<div class="columns small-12">
+		<h1>Past Trips</h1>
+		<!-- table of past trips -->
+		<table>
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th>Start</th>
+					<th>Duration</th>
+					<th>Users</th>
+					<th>Points</th>
+					<th>Distance</th>
+				</tr>
+			</thead>
+			<tbody>
+				{{#each trips}}
+				{{> trip}}
+				{{/each}}
+			</tbody>
+		</table>
+	</div>
 </body>
-<template name="user-radio">
-</template>
