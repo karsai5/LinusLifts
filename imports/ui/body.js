@@ -4,6 +4,7 @@ import { Session } from 'meteor/session'
 
 import { Trips } from '../api/trips.js';
 
+import './usertable.js';
 import './usercheckbox.js';
 import './trip.js';
 import './body.html';
@@ -30,9 +31,9 @@ Template.body.helpers({
 			return false;
 		}
 	},
-	userList() {
+	users() {
 		return Meteor.users.find({});
-	}
+	},
 });
 
 Template.body.events({

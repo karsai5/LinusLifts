@@ -2,7 +2,7 @@ import { Template } from 'meteor/templating';
 
 import { Trips } from '../api/trips.js';
 
-import './trip.html';
+import './usertable.html';
 
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 //:::                                                                         :::
@@ -46,61 +46,53 @@ function distance(lat1, lon1, lat2, lon2, unit) {
 	return dist
 }
 
-var monthNames = [
-	"Jan", "Feb", "Mar", "Apr", "May", "Jun",
-	"Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
-];
-var dayNames = [
-	"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
-]
+var getTrips = function(user) {
+	count = 0;
+	trips = Trips.find({}).fetch();
+	results = [];
 
-var getNiceDate = function(date) {
-	var day = date.getDay();
-	var dayIndex = date.getDay();
-	var monthIndex = date.getMonth();
-	var month = monthNames[monthIndex];
-	var year = date.getFullYear();
-	return dayNames[dayIndex] + ', ' + day + ' ' + month;
-}
+	// loop through trips
+	for (key in trips) {
+		var trip = trips[key];
+		for (userkey in trip.users) {
+			u = trip.users[userkey];
+			if (u._id == user._id) {
+				results.push(trip);
+			}
+		}
+	}
+	return results;
+};
 
-Template.trip.helpers({
+Template.usertable.helpers({
+	name() {
+		if (this.services.facebook) {
+			return this.services.facebook.name;
+		}
+		return this.username;
+	},
+	getTrips() {
+		return getTrips(this);
+	},
+	countTrips() {
+		return getTrips(this).length;
+	},
 	getDistance() {
-		// if there's any points count them
-		total = 0;
-		if (this.points && this.points.length > 1) {
-			for(x = 0; x < this.points.length-1; x++) {
-				pointA = this.points[x];
-				pointB = this.points[x+1];
-				dist = distance(pointA.lat, pointA.lng, pointB.lat, pointB.lng, "K");
-				total = total + dist;
+		trips = getTrips(this);
+		totalDistance = 0;
+		for (key in trips) {
+			trip = trips[key];
+			total = 0;
+			if (trip.points && trip.points.length > 1) {
+				for(x = 0; x < trip.points.length-1; x++) {
+					pointA = trip.points[x];
+					pointB = trip.points[x+1];
+					dist = distance(pointA.lat, pointA.lng, pointB.lat, pointB.lng, "K");
+					total = total + dist;
+				}
 			}
+			totalDistance = totalDistance + total;
 		}
-
-		return parseFloat(total.toFixed(0)) + "km";
-	},
-	getPoints() {
-		if (this.points) {
-			return this.points.length;
-		}
-		return 0;
-	},
-	getStart() {
-		return getNiceDate(this.start);
-	},
-	getDuration() {
-		var timeDiff = Math.abs(this.start.getTime() - this.end.getTime());
-		var diffMinutes = Math.ceil(timeDiff / (1000 * 60));
-		return diffMinutes + 'min';		
-	},
-	getUsers() {
-		usernames = []
-		for (u of this.users) {
-			if (u.services.facebook) {
-				usernames.push(u.services.facebook.name);
-			} else {
-				usernames.push(u.username);
-			}
-		}
-		return usernames.join(', ');
+		return parseFloat(totalDistance.toFixed(0)) + "km";
 	},
 });
