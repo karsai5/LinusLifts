@@ -1,19 +1,32 @@
+/**
+ * @file Trip Javascript
+ * @author Linus Karsai <karsai5@gmail.com>
+ * @version 0.1
+ */
+
 import { Template } from 'meteor/templating';
 
 import { Trips } from '../api/trips.js';
-
-import './trip.html';
 import { distance } from '../helpers/distance.js';
 
-var monthNames = [
-	"Jan", "Feb", "Mar", "Apr", "May", "Jun",
-	"Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
-];
-var dayNames = [
-	"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
-]
+import './trip.html';
+
 
 var getNiceDate = function(date) {
+	/**
+	 * Returns the date as an arguably prettier string.
+	 * Example: Mon, 7 May
+	 *
+	 * @param {Date} date - The date you want printed
+	 * @return {String} The date in format dayOfWeek, day month
+	 */
+	var monthNames = [
+		"Jan", "Feb", "Mar", "Apr", "May", "Jun",
+		"Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+	];
+	var dayNames = [
+		"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
+	]
 	var day = date.getDay();
 	var dayIndex = date.getDay();
 	var monthIndex = date.getMonth();
@@ -24,8 +37,14 @@ var getNiceDate = function(date) {
 
 Template.trip.helpers({
 	getDistance() {
-		// if there's any points count them
+		/**
+		 * Iterates through all the points, finding the distance between pairs.
+		 * It then returns the final sum.
+		 *
+		 * @return {String} distance in kilometers e.g. 5km
+		 */
 		total = 0;
+		// check there's more than one point to count
 		if (this.points && this.points.length > 1) {
 			for(x = 0; x < this.points.length-1; x++) {
 				pointA = this.points[x];
@@ -37,21 +56,42 @@ Template.trip.helpers({
 
 		return parseFloat(total.toFixed(0)) + "km";
 	},
-	getPoints() {
+	getPointCount() {
+		/**
+		 * Get's the number of geo points in a trip.
+		 *
+		 * @return {int} number of geo points.
+		 */
 		if (this.points) {
 			return this.points.length;
 		}
 		return 0;
 	},
 	getStart() {
+		/**
+		 * Returns the trip start date using the nice date method.
+		 *
+		 * @return {String} pretty trip start date
+		 */
 		return getNiceDate(this.start);
 	},
 	getDuration() {
+		/** 
+		 * Calculates the trip duration using the start and end time, 
+		 * printing out the overall trip duration in minutes.
+		 *
+		 * @return {String} number of minutes e.g. 10min
+		 */
 		var timeDiff = Math.abs(this.start.getTime() - this.end.getTime());
 		var diffMinutes = Math.ceil(timeDiff / (1000 * 60));
-		return diffMinutes + 'min';		
+		return diffMinutes + 'min';
 	},
-	getUsers() {
+	getUserList() {
+		/**
+		 * Returns a comma separated list of users who where on the trip.
+		 * 
+		 * @return {String} List of users
+		 */
 		usernames = []
 		for (u of this.users) {
 			if (u.services.facebook) {
