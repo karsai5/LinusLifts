@@ -42,8 +42,8 @@ Template.usertable.helpers({
 		 *
 		 * @return {String} username
 		 */
-		if (this.services.facebook) {
-			return this.services.facebook.name;
+		if (this.profile && this.profile.name) {
+			return this.profile.name;
 		}
 		return this.username;
 	},

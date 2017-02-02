@@ -41,6 +41,8 @@
 		{{/if}}
 	</div>
 
+	{{#if isAdmin}}
+	<!-- only show the past trips if the user is an admin -->
 	<div class="columns small-12">
 		<h1>Past Trips</h1>
 		<!-- table of past trips -->
@@ -62,6 +64,7 @@
 			</tbody>
 		</table>
 	</div>
+	{{/if}}
 
 	<div class="columns small-12">
 		<h1>Users</h1>
