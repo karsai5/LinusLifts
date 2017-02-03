@@ -7,7 +7,6 @@
 import { Template } from 'meteor/templating';
 
 import { Trips } from '../api/trips.js';
-import { distance } from '../helpers/distance.js';
 
 import './trip.html';
 
@@ -38,23 +37,12 @@ var getNiceDate = function(date) {
 Template.trip.helpers({
 	getDistance() {
 		/**
-		 * Iterates through all the points, finding the distance between pairs.
-		 * It then returns the final sum.
+		 * Grabs the distance from the database.
 		 *
 		 * @return {String} distance in kilometers e.g. 5km
 		 */
-		total = 0;
-		// check there's more than one point to count
-		if (this.points && this.points.length > 1) {
-			for(x = 0; x < this.points.length-1; x++) {
-				pointA = this.points[x];
-				pointB = this.points[x+1];
-				dist = distance(pointA.lat, pointA.lng, pointB.lat, pointB.lng, "K");
-				total = total + dist;
-			}
-		}
 
-		return parseFloat(total.toFixed(0)) + "km";
+		return parseFloat(this.distance.toFixed(0)) + "km";
 	},
 	getPointCount() {
 		/**

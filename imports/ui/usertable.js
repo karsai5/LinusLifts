@@ -7,7 +7,6 @@
 import { Template } from 'meteor/templating';
 
 import { Trips } from '../api/trips.js';
-import { distance } from '../helpers/distance.js';
 
 import './usertable.html';
 
@@ -61,25 +60,17 @@ Template.usertable.helpers({
 	},
 	getDistance() {
 		/**
-		 * Iterates through all the trips and grabs the distance of each array
-		 * of geopoints.
+		 * Iterates through all the trips and sums the distances from the
+		 * database.
 		 *
 		 * @return {String} distance in km
-		 */ 
+		 */
 		trips = getTrips(this);
 		totalDistance = 0;
+		// iterate through each trip
 		for (key in trips) {
 			trip = trips[key];
-			total = 0;
-			if (trip.points && trip.points.length > 1) {
-				for(x = 0; x < trip.points.length-1; x++) {
-					pointA = trip.points[x];
-					pointB = trip.points[x+1];
-					dist = distance(pointA.lat, pointA.lng, pointB.lat, pointB.lng, "K");
-					total = total + dist;
-				}
-			}
-			totalDistance = totalDistance + total;
+			totalDistance = trip.distance;
 		}
 		return parseFloat(totalDistance.toFixed(0)) + "km";
 	},
