@@ -74,4 +74,11 @@ Template.usertable.helpers({
 		}
 		return parseFloat(totalDistance.toFixed(0)) + "km";
 	},
+	profilePic() {
+		if (this.services.facebook) {
+			picture = "http://graph.facebook.com/" + this.services.facebook.id + "/picture/?type=large";
+			return picture;
+		}
+		return "";
+	},
 });

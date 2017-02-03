@@ -1,3 +1,9 @@
 @import '{zurb:foundation-sites}/scss/foundation';
 
 @include foundation-everything;
+
+img.profilepic {
+	width: 120px;
+	height: 120px;
+	border-radius: 60px;
+}
